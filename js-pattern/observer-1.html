@@ -1,0 +1,173 @@
+
+<!doctype html>
+<html>
+<head>
+    <title>Observer--观测者模式-例子：杂志订阅</title>
+</head>    
+<body>
+
+    
+<script>
+"use strict";
+/**
+ * 通用发布者功能
+ * 
+ * @namespace
+ */
+var publisher = {
+    /**
+     * 一个数组
+     * 
+     * @type {Object}
+     */
+    subscribers: {
+        any: [] // event type: subscribers
+    },
+    /**
+     * 将订阅者添加到subscribers数组
+     * 
+     * @param {[type]} fn [fn description]
+     * @param {[type]} type [type description]
+     * @return {[type]} [return description]
+     */
+    subscribe: function (fn, type) {
+        type = type || 'any';
+        if (typeof this.subscribers[type] === "undefined") {
+            this.subscribers[type] = [];
+        }
+        this.subscribers[type].push(fn);
+    },
+    /**
+     * 从订阅者数组subscribers中删除订阅者
+     * 
+     * @param {[type]} fn [fn description]
+     * @param {[type]} type [type description]
+     * @return {[type]} [return description]
+     */
+    unsubscribe: function (fn, type) {
+        this.visitSubscribers('unsubscribe', fn, type);
+    },
+    /**
+     * 循环遍历subscribers中的每个元素，并且调用它们注册时所提供的方法
+     * 
+     * @param {String} publication [出版物]
+     * @param {String} type [出版物类别]
+     * @return {[type]} [return description]
+     */
+    publish: function (publication, type) {
+        this.visitSubscribers('publish', publication, type);
+    },
+    visitSubscribers: function (action, arg, type) {
+        var pubtype = type || 'any',
+            subscribers = this.subscribers[pubtype],
+            i,
+            max = subscribers.length;
+            
+        for (i = 0; i < max; i += 1) {
+            if (action === 'publish') {
+                subscribers[i](arg);
+            } else {
+                if (subscribers[i] === arg) {
+                    subscribers.splice(i, 1);
+                }
+            }
+        }
+    }
+};
+
+/*
+var s1 = {log: console.log},
+    s2 = {err: console.error},
+    s3 = {warn: console.warn};
+
+
+publisher.subscribe(s1.log);
+publisher.subscribe(s2.err);
+publisher.subscribe(s3.warn);
+
+publisher.publish({hello: "World"});
+
+publisher.unsubscribe(s2.err);
+publisher.publish("hello");
+
+
+publisher.subscribe(s1.log, "log");
+publisher.publish({obj: "log this object"}, "log");
+*/
+
+/**
+ * 接受一个对象，通过发布者的方法复制到该对象中，从而将其转换为一个发布者
+ * 
+ * @param {Object} o [o description]
+ * @return {[type]} [return description]
+ * @example makePublisher(paper);
+ */
+function makePublisher(o) {
+    var i;
+    for (i in publisher) {
+        if (publisher.hasOwnProperty(i) && typeof publisher[i] === "function") {
+            o[i] = publisher[i];
+        }
+    }
+    o.subscribers = {any: []};
+}
+/**
+ * 发布日报和月刊
+ * 
+ * @namespace
+ */
+var paper = {
+    daily: function () {
+        this.publish("big news today");
+    },
+    monthly: function () {
+        this.publish("interesting analysis", "monthly");
+    }
+};
+//ex: 将paper构造为一个发布者
+makePublisher(paper);
+
+/**
+ * 订阅者对象joe
+ * 
+ * @namespace
+ */
+var joe = {
+    drinkCoffee: function (paper) {
+        console.log('Just read ' + paper);
+    },
+    sundayPreNap: function (monthly) {
+        console.log('About to fall asleep reading this ' + monthly);
+    }
+};
+
+//ex: paper注册joe 即：joe向paper订阅
+paper.subscribe(joe.drinkCoffee);
+paper.subscribe(joe.sundayPreNap, 'monthly');
+
+paper.daily();
+paper.daily();
+paper.daily();
+paper.monthly();
+
+//ex: 将joe变成一个发布者，并且可以在Twitter上发布状态更新
+makePublisher(joe);
+joe.tweet = function (msg) {
+    this.publish(msg);
+};
+/**
+ * 读取读者joe的tweer，并订阅joe的信息
+ * 
+ * @param {[type]} tweet [tweet description]
+ * @return {[type]} [return description]
+ */
+paper.readTweets = function (tweet) {
+    alert('Call big meeting! Someone ' + tweet);
+};
+
+joe.subscribe(paper.readTweets);
+
+joe.tweet("hated the paper today");
+</script>
+
+</body></html>
