@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>巧用cssText属性批量操作样式</title>
+
+</head>
+<body>
+	<div id="t1">t1</div>
+	<div id="t2">t2</div>
+	<div id="t3">t3</div>
+	<div id="t4">t4</div>
+
+	<script type="text/javascript">
+		//给t1添加样式 == 普通做法  == 性能较差
+		var t1 = document.getElementById('t1'),
+			t2 = document.getElementById('t2'),
+			t3 = document.getElementById('t3');
+
+		//ex:
+		t1.style.width = '200px';
+		t1.style.height = '200px';
+		t1.style.background = 'red';
+		t1.style.float = 'left';
+
+
+		/**
+		 * 批量添加样式操作
+		 * 
+		 * @param {Object} el 添加样式的DOM对象 
+		 * @param {[type]} css css的json对象
+		 * @return {[type]} 为对象添加样式
+		 * @
+		 */
+		function setStyle1(el,css) {
+			for(var attr in css){
+				el.style[attr] = css[attr];
+			}
+		}
+		//ex:
+		setStyle1(t2,{width:"200px",height:"200px",background:"blue",float:"left"});
+
+
+		/**
+		 * 使用该方法在IE9/Firefox/Safari/Chrome/Opera中没什么问题，但由于 IE6/7/8中cssText返回值少了分号 会让你失望。
+		 * 因此对IE6/7/8还需单独处理下，如果cssText返回值没";"则补上
+		 * 
+		 * @param {[type]} el [el description]
+		 * @param {[type]} strCss [strCss description]
+		 * @return {[type]} [return description]
+		 */
+		function setStyle(el, strCss){
+		    function endsWith(str, suffix) {
+		        var l = str.length - suffix.length;
+		        return l >= 0 && str.indexOf(suffix, l) == l;
+		    }
+		    var sty = el.style,
+		        cssText = sty.cssText;
+		    
+		    if(!endsWith(cssText, ';')){
+		        cssText += ';';
+		    }
+		    sty.cssText = cssText + strCss;
+		}
+		//ex:
+		setStyle(t3,'width:200px;height:200px;background:yellow;float:left');
+
+
+
+		//ex:
+		t4.style.cssText += ';width:200px;height:200px;background:black;float:left';
+		
+	</script>
+</body>
+</html>
