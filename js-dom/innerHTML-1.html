@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>DOM访问修改- 性能比较</title>
+</head>
+<body>
+
+	<div id="t1"></div>
+	<div id="t2"></div>
+
+	<script type="text/javascript">
+		/**
+		 * 读取并写入节点t1上的html,
+		 * 直接读取修改，较差实现
+		 * 
+		 * @return {[type]} [return description]
+		 */
+		function innerHTMLLoop() {
+			for(var count = 0; count < 15000; count++) {
+				document.getElementById('t1').innerHTML += 'a';
+			}
+		}
+		/**
+		 * 读取并写入节点t1上的html,
+		 * 缓存在变量中，循环结束后写入t1节点
+		 * 
+		 * @return {[type]} [return description]
+		 */
+		function innerHTMLLoop2() {
+			var content = '';
+			for(var count = 0; count < 15000; count++) {
+				content += 'a';
+			}
+			document.getElementById('t2').innerHTML = content;
+		}
+
+		//ex1:
+		var start, end;
+		start = new Date();
+		innerHTMLLoop();
+		end = new Date();
+		console.log(end - start); //5003
+
+		//ex2:
+		start = new Date();
+		innerHTMLLoop2();
+		end = new Date();
+		console.log(end - start); //15
+	</script>
+</body>
+</html>
