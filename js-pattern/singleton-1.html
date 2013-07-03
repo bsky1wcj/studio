@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>singleton -单例模式</title>
+
+
+</head>
+<body>
+	<script type="text/javascript">
+
+		// http://www.alloyteam.com/2012/10/common-javascript-design-patterns/
+		/**
+		 * 通用单例方法包装器
+		 * 
+		 * @param {function} fn [fn description]
+		 * @return {[type]} [return description]
+		 */
+		var singleton = function(fn) {
+				console.log('run sigleton!');
+				var result;
+				return function() {
+					console.log('run sigleton function!',this,arguments);
+					return result || (result = fn.apply(this, arguments));
+				}
+			}
+
+		var createMask = singleton(function() {
+			return document.body.appendChild(document.createElement('div'));
+		})
+
+		createMask(1, 2, 3); //创建div 
+		//createMask(); //不再创建div
+		//createMask(); //不再创建div
+
+
+
+	</script>	
+</body>
+</html>

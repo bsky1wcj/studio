@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>init-time-branching 初始化时分支</title>
+</head>
+<script type="text/javascript">
+	//接口
+	var utils = {
+		addListener: null,
+		removeListener: null
+	};
+	//实现
+	if(typeof window.addEventListener === 'function') {
+		utils.addListener = function(el, type, fn) {
+			el.addEventListener(type, fn, false);
+		};
+	} else if(typeof document.attachEvent === 'function') { //IE
+		utils.addListener = function(el, type, fn) {
+			el.attachEvent('on' + type, fn);
+		};
+	} else {//更早版本的浏览器
+		utils.addListener = function(el, type, fn) {
+			el['on' + type] = fn;
+		};
+	}
+
+	if(typeof window.removeEventListener === 'function') {
+		utils.removeListener = function(el, type, fn) {
+			el.removeEventListener(type, fn, false);
+		};
+	} else if(typeof document.detachEvent === 'function') { //IE
+		utils.removeListener = function(el, type, fn) {
+		};
+	} else {//更早版本的浏览器
+		utils.removeListener = function(el, type, fn) {
+			el['on' + type] = null;
+		};
+	}
+
+
+
+</script>
+<body>
+	<div id="t1">对象1:点击我 查看监听</div>
+	<div id="t2">对象2:点击我 查看监听未成功移除</div>
+	<div id="t3">对象3:点击我 查看监听被成功移除</div>
+	<script>
+		//test
+		var t1 = document.getElementById('t1'),
+			t2 = document.getElementById('t2'),
+			t3 = document.getElementById('t3');
+		utils.addListener(t1, 'click', function(){alert('点击了t1!')});
+
+		//通过addEventListener()添加的事件处理程序只能使用removeEventListener()来移除；
+		//移除时传入的参数与添加处理程序时使用的参数相同。这也意味着通过addEventListener()添加的匿名函数无法移除
+		utils.addListener(t2, 'click', function(){alert('点击了t2!')});
+		utils.removeListener(t2,'click', function(){alert('点击了t2-removeListener!')}); //无效！
+
+
+		var handler = function(){
+			alert('点击了t3!');
+		};
+		utils.addListener(t3, 'click', handler);
+		utils.removeListener(t3, 'click', handler);//有效！
+	</script>
+</body>
+</html>

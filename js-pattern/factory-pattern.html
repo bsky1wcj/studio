@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<script type="text/javascript">
+
+		//内置对象工厂
+		var o = new Object(),
+			n = new Object(1),
+			s = new Object('1'),
+			b = new Object(true);
+
+		//test
+		console.log(o.constructor === Object); //true
+		console.log(n.constructor === Number); //true
+		console.log(s.constructor === String); //true
+		console.log(b.constructor === Boolean); //true
+	</script>
+</head>
+<body>
+	
+</body>
+</html>

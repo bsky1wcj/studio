@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>函数属性-备忘模式</title>
+	<script type="text/javascript">
+		var myFunc = function(param) {
+				if(!myFunc.cache[param]) {
+					var result = {};
+					//...开销大的操作...
+					myFunc.cache[param] = result;
+				}
+				return myFunc.cache[param];
+			};
+		/**
+		 * 缓存存储
+		 * 
+		 * @namespace
+		 */
+		myFunc.cache = {};
+
+		//ex:
+		myFunc('test1');
+		myFunc('test2');
+		console.log(myFunc.cache);
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
