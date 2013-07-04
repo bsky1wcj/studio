@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>createDocumentFragment--批量修改DOM</title>
+</head>
+<body>
+
+	// ul#mylist1>li*5>a[href='http://www.17173.com/$']{li$}
+	<ul id="mylist1">
+		<li><a href="http://www.17173.com/1">li1</a></li>
+		<li><a href="http://www.17173.com/2">li2</a></li>
+		<li><a href="http://www.17173.com/3">li3</a></li>
+		<li><a href="http://www.17173.com/4">li4</a></li>
+		<li><a href="http://www.17173.com/5">li5</a></li>
+	</ul>
+
+	// ul#mylist2>li*5>a[href='http://www.17173.com/$']{li$}
+	<ul id="mylist2">
+		<li><a href="http://www.17173.com/1">li1</a></li>
+		<li><a href="http://www.17173.com/2">li2</a></li>
+		<li><a href="http://www.17173.com/3">li3</a></li>
+		<li><a href="http://www.17173.com/4">li4</a></li>
+		<li><a href="http://www.17173.com/5">li5</a></li>
+	</ul>
+
+	// ul#mylist3>li*5>a[href='http://www.17173.com/$']{li$}
+	<ul id="mylist3">
+		<li><a href="http://www.17173.com/1">li1</a></li>
+		<li><a href="http://www.17173.com/2">li2</a></li>
+		<li><a href="http://www.17173.com/3">li3</a></li>
+		<li><a href="http://www.17173.com/4">li4</a></li>
+		<li><a href="http://www.17173.com/5">li5</a></li>
+	</ul>
+
+	// ul#mylist4>li*5>a[href='http://www.17173.com/$']{li$}
+	<ul id="mylist4">
+		<li><a href="http://www.17173.com/1">li1</a></li>
+		<li><a href="http://www.17173.com/2">li2</a></li>
+		<li><a href="http://www.17173.com/3">li3</a></li>
+		<li><a href="http://www.17173.com/4">li4</a></li>
+		<li><a href="http://www.17173.com/5">li5</a></li>
+	</ul>
+
+	<script type="text/javascript">
+		var data = [
+			{
+				"name" : "li1-1",
+				"url" : "http://www.yeyou.com/1"
+			},
+			{
+				"name" : "li2-1",
+				"url" : "http://www.yeyou.com/2"
+			},
+			{
+				"name" : "li3-1",
+				"url" : "http://www.yeyou.com/3"
+			},
+			{
+				"name" : "li4-1",
+				"url" : "http://www.yeyou.com/4"
+			},
+			{
+				"name" : "li5-1",
+				"url" : "http://www.yeyou.com/5"
+			}
+		];
+
+		/**
+		 * 向指定节点添加数据
+		 * 
+		 * @param {Object} appendToElement 要添加字子节点的对象
+		 * @param {Object} data 要添加的数据，JSON数据格式
+		 * @return {Object} 在指定节点添加子节点
+		 */
+		function appendDataToElement(appendToElement, data) {
+			var a, li;
+			for (var i = 0, max = data.length; i < max; i++) {
+				a = document.createElement('a');
+				a.href = data[i].url;
+				a.appendChild(document.createTextNode(data[i].name));
+				li = document.createElement('li');
+				li.appendChild(a);
+				appendToElement.appendChild(li);
+			}
+		}
+
+		//ex1: 每条li的添加都会导致当前DOM树重排
+		var ul1 = document.getElementById('mylist1');
+		appendDataToElement(ul1, data);
+
+		//ex2 :通过display属性减少重排
+		var ul2 = document.getElementById('mylist2');
+		ul2.style.display = 'none';  //*
+		appendDataToElement(ul2, data);
+		ul2.style.display = 'block'; //*
+
+
+		//ex3: 通过createDocumentFragment 在文档之外创建并更新一个文档片段，让后附件到原始列表中
+		// 推荐方案
+		var fragment = document.createDocumentFragment();
+		appendDataToElement(fragment, data);
+		document.getElementById('mylist3').appendChild(fragment);
+
+		//ex4: 为修改的节点创建一个备份，然后对副本进行操作，一旦操作完成，用新的节点替换旧的节点
+		var old = document.getElementById('mylist4');
+		var clone = old.cloneNode(true);
+		appendDataToElement(clone, data);
+		old.parentNode.replaceChild(clone, old);
+
+
+
+	</script>
+	
+</body>
+</html>
