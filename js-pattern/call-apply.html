@@ -11,6 +11,19 @@
 			return args;
 		}
 		console.log(f(1, 2, 3, 4, 5, 6)); // [2,3]
+
+
+
+		var one = {
+			name: 'object',
+			say: function(greet){
+				return greet + ',' + this.name
+			}
+		};
+		console.log(one.say('hi')); // hi,object
+
+		var say = one.say;
+		console.log(say('hoho')) //hoho,undefined
 	</script>
 </body>
 </html>
