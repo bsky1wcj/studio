@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>借用方法</title>
+</head>
+<body>
+	<script type="text/javascript">
+		function f() {
+			var args = [].slice.call(arguments, 1, 3);  // Array.prototype.slice.call(arguments, 1, 3);  // 与前面等价，并且节省创建一个空数组的工作
+			return args;
+		}
+		console.log(f(1, 2, 3, 4, 5, 6)); // [2,3]
+	</script>
+</body>
+</html>
