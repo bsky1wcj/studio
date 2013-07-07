@@ -22,25 +22,8 @@
 		};
 		console.log(one.say('hi')); // hi,object
 
-		//给变量赋值  ‘this’ 指向全局变量
 		var say = one.say;
 		console.log(say('hoho')) //hoho,undefined
-
-		var two = {
-			name: 'another object'
-		};
-		console.log(one.say.apply(two, ['hello'])); // hello,another object 
-
-
-		//借用和绑定
-		function bind(o, m) {
-			return function(){
-				return m.apply(o, [].slice.call(arguments));
-			};
-		}
-		//ex:
-		var twosay = bind(two, one.say);
-		console.log(twosay('yo')); //yo, another object
 	</script>
 </body>
 </html>
