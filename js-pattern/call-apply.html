@@ -26,22 +26,48 @@
 		console.log(say('hoho')) //hoho,undefined
 
 
--
--		var two = {
--			name: 'another object'
--		};
--		console.log(one.say.apply(two, ['hello'])); // hello,another object 
--
--
--		//借用和绑定
--		function bind(o, m) {
--			return function(){
--				return m.apply(o, [].slice.call(arguments));
--			};
--		}
--		//ex:
--		var twosay = bind(two, one.say);
--		console.log(twosay('yo')); //yo, another object
+
+		var two = {
+			name: 'another object'
+		};
+		console.log(one.say.apply(two, ['hello'])); // hello,another object 
+
+
+		//借用和绑定
+		function bind(o, m) {
+			return function(){
+				return m.apply(o, [].slice.call(arguments));
+			};
+		}
+		//ex:
+		var twosay = bind(two, one.say);
+		console.log(twosay('yo')); //yo, another object
+
+		/**
+		 * Function.prototype.bind 实现
+		 * 像apply() 和 call()
+		 * 
+		 * @type {[type]}
+		 */
+		if (typeof Function.prototype.bind === 'undefined') {
+			Function.prototype.bind = function(thisArg){
+				var fn = this,
+					slice = Array.prototype.slice,
+					args = slice.call(arguments, 1);
+				return function() {
+					return fn.apply(thisArg, args.concat(slice.call(arguments)));
+				};	
+			};
+		}
+
+		//ex:
+		var twosay2 = one.say.bind(two);
+		console.log(twosay2('Bonjour'));  // Bonjour,another object 
+
+		//ex:
+		var twosay3 = one.say.bind(two,'En');
+		console.log(twosay3());  // En,another object 		
+
 
 	</script>
 </body>
