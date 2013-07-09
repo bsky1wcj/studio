@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>单体模式-singleton</title>
+</head>
+<body>
+	<script type="text/javascript">
+
+		//静态属性中的实例
+		function Universe() {
+			if(typeof Universe.instance === 'object') {
+				return Universe.instance;
+			}
+
+			this.start_time = 0;
+			this.bang = 'Big';
+
+			//缓存
+			Universe.instance = this;
+
+			//隐式返回
+			//return this;
+		}
+
+		//ex:
+		var un1 = new Universe();
+		var un2 = new Universe();
+		console.log(un1 === un2); //true
+
+
+		//闭包中的实例
+		function Universe2() {
+			//缓存实例
+			var instance = this;
+
+			this.start_time = 0;
+			this.bang = 'Big';
+
+			//重写该构造函数
+			Universe2 = function() {
+				return instance;
+			};
+		}
+		//ex:
+		var un2_1 = new Universe2();
+		var un2_2 = new Universe2();
+		console.log(un2_1 == un2_2); // true
+		console.log(un2_1.constructor === Universe2); //false
+		
+
+
+		function Universe3() {
+			//缓存实例
+			var instance;
+
+			//重写构造函数
+			Universe3 = function Universe3() {
+				return instance;
+			};
+
+			//保留原型属性
+			Universe3.prototype = this;
+
+			//实例
+			instance = new Universe3();
+
+			//重置构造函数指针
+			instance.constructor = Universe3;
+
+			instance.start_time = 0;
+			instance.bang = 'Big';
+
+			return instance;
+
+		}
+		//ex:
+		Universe3.prototype.nothing = true;
+		var un3_1 = new Universe3();
+		Universe3.prototype.everying = true;
+		var un3_2 = new Universe3();
+		console.log(un3_1.nothing,un3_2.everying); // true, true
+		console.log('Universe3->',un3_1 == un3_2); // true
+		console.log(un3_2.constructor === Universe3); // true
+
+
+
+		var Universe4;
+		(function() {
+			var instance;
+			Universe4 = function Universe4(){
+				if(instance) {
+					return instance;
+				}
+				instance = this;
+
+				this.start_time = 0;
+				this.bang = 'Big';
+			};
+		}());
+		//ex:
+		var un4_1 = new Universe4();
+		var un4_2 = new Universe4();
+		console.log(un4_1 == un4_2); // true
+		console.log(un4_1.constructor === Universe4); //true
+	</script>
+</body>
+</html>
