@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>命名空间模式</title>
+</head>
+<body>
+	<script type="text/javascript">
+		var MYAPP = MYAPP || {};
+		MYAPP.namespace = function(ns_string) {
+			var parts = ns_string.split('.'),
+				parent = MYAPP,
+				i;
+
+			if(parts[0] === 'MYAPP'){
+				parts = parts.slice(1);
+			}
+
+			for (i = 0; i < parts.length; i++ ) {
+				if(typeof parent[parts[i]] === 'undefined') {
+					parent[parts[i]] = {};
+				}
+				parent = parent[parts[i]];
+			}
+			return parent;
+		};
+
+		//ex:
+		var module2 = MYAPP.namespace('MYAPP.modules.module2');
+		console.log(module2 === MYAPP.modules.module2);
+
+		console.log(MYAPP.namespace('modules.module1'));
+
+		console.log(MYAPP.namespace('a.b.c.d.e.f.g.h'));
+	</script>
+	
+</body>
+</html>
