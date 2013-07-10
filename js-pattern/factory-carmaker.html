@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>factory-CarMaker</title>
+</head>
+<body>
+	<script type="text/javascript">
+
+		//父类构造函数
+		function CarMaker() {}
+
+		//父类的一个方法
+		CarMaker.prototype.drive = function() {
+			return 'Vroom, I have ' + this.doors + ' doors';
+		};
+
+		//静态工厂方法
+		CarMaker.factory = function (type) {
+			var newcar;
+
+			if(typeof CarMaker[type] !== 'function'){
+				throw {
+					name: 'Error',
+					message: type + ' doesn\'t exist!'
+				};
+			}
+			//在这里，构造函数是已知存在的
+			// 我们使得原型继承父类，但仅继承一次
+			if(typeof CarMaker[type].prototype.drive !== 'function') {
+				CarMaker[type].prototype =  new CarMaker();
+			}
+			//创建一个新的实例
+			newcar = new CarMaker[type]();
+			return newcar;
+		};
+
+		//定义特定的汽车制造商
+		CarMaker.Compact = function() {
+			this.doors = 4;
+		};
+
+		CarMaker.Convertible = function() {
+			this.doors = 2;
+		};
+
+		CarMaker.Suv = function() {
+			this.doors = 24;
+		};
+
+		//ex:
+		var corolla = CarMaker.factory('Compact');
+		console.log(corolla.drive());  //Vroom, I have 4 doors
+
+		var solstice = CarMaker.factory('Convertible');
+		console.log(solstice.drive());  //Vroom, I have 2 doors 
+
+		var cherokce = CarMaker.factory('Suv');
+		console.log(cherokce.drive());  //Vroom, I have 24 doors 
+
+		var tt = CarMaker.factory('tt');  //Uncaught #<Object>   报错
+		//console.log(tt.drive());  //Vroom, I have 2 doors 
+	</script>
+</body>
+</html>
