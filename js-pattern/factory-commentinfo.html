@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>CommentInfo--评论数读取</title>
+	<link type="text/css" href="http://ue8.17173.itc.cn/cache/lib/v2/reset-and-utils-1.0.css" rel="stylesheet" media="all" />
+	<style type="text/css">
+		body{font-size:12px; width:960px; margin:0px auto;}
+
+	</style>
+	<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+</head>
+<body>
+
+	<ul>
+    	<li class="js-comment-item" data-topicId="1xg8a0db2dgcod7mxbkf"><a href="javascript:void(0);" target="_blank" class="js-comment-title js-comment-articleurl"></a>  评论数：<span class="js-comment-count"></span></li>
+        <li class="js-comment-item" data-topicId="1xg8a0db2dhagxiykfjq"><a href="javascript:void(0);" target="_blank" class="js-comment-title js-comment-articleurl"></a>  评论数：<span class="js-comment-count"></span></li>
+    </ul>
+
+
+
+	<ul>
+    	<li class="js-comment-item2" data-topicId="12963_9_90044"><a href="javascript:void(0);" target="_blank" class="js-comment-title js-comment-articleurl">畅言</a>  评论数：<span class="js-comment-count"></span></li>
+        <li class="js-comment-item2" data-topicId="12868_9_90044"><a href="javascript:void(0);" target="_blank" class="js-comment-title js-comment-articleurl">畅言</a>  评论数：<span class="js-comment-count"></span></li>
+        <li class="js-comment-item2" data-topicId="1670313"><a href="javascript:void(0);" target="_blank" class="js-comment-title js-comment-articleurl">畅言</a>  评论数：<span class="js-comment-count"></span></li>
+    </ul>
+
+
+	<script type="text/javascript">
+
+
+		var CIMaker = function(opts) {
+			this.opts = $.extend({}, CIMaker.default, opts);
+			//console.log(this.opts);
+		};
+
+		CIMaker.default = {
+			debug : false, //开启bug调试
+			commentItem : '.js-comment-item', //评论项  容器
+			commentCount:  '.js-comment-count', //评论数
+			commentTitle : '.js-comment-title', //标题
+			commentArticleurl: '.js-comment-articleurl', //文章URL
+			commentType : 'yyqq' //默认yyqq  yyqq:17173评论系统   changYan：changyan评论系统
+		};
+		CIMaker.log = function(msg) {
+			//if (CIMaker.opts.debug && window.console && window.console.log) {
+			if (window.console && window.console.log) {
+				window.console.log(arguments);
+			}
+		},
+		/**
+		 * 静态工厂方法
+		 * 
+		 * @param {String|Object} opts 评论类型 String: changYan | yyqq   Object: CIMaker.default
+		 * @return {Object} return CIMaker实例 即评论数实例
+		 */
+		CIMaker.factory = function(opts) {
+			
+			var newCI;
+			//获取工厂类别
+			if(opts && typeof opts === 'string') {
+				type = opts;
+				opts = {'commentType' : type };
+			}
+			else if(opts && typeof opts === 'object') {
+				type = opts.commentType ? opts.commentType : this.default.commentType;	
+			} else {
+				type = this.default.commentType;
+			}
+
+			CIMaker.log(type + '.factory...');
+			
+			
+			//判断工厂实现类是否存在
+			if(typeof CIMaker[type] !== 'function'){
+				throw {
+					name: 'Error',
+					message: type + ' doesn\'t exist!'
+				};
+			}
+			if(typeof CIMaker[type].formatTopicIds !== 'function' && typeof CIMaker[type].formatAjaxData !== 'function'){
+				return;
+			}
+
+			//构造函数是已知存在的
+			//使得原型继承父类，但仅继承一次
+			if(typeof CIMaker[type].prototype.init !== 'function') {
+				CIMaker[type].prototype =  new CIMaker(opts);
+			}
+
+
+			//创建一个新的实例
+			newCI = new CIMaker[type]();
+			
+			//各种操作
+			newCI._type = type;
+			//newCI.opts = $.extend({}, this.default, opts);
+			newCI._topicIds = newCI.getTopicIds();
+			newCI._formatTopicIds = CIMaker[type].formatTopicIds(newCI._topicIds);
+			newCI._callback = function(datas){
+				newCI.decorate(CIMaker[newCI._type].formatAjaxData(datas));
+			};
+			
+			newCI.getData(newCI._formatTopicIds, newCI._callback);
+
+			return newCI;
+		};
+
+
+		/**
+		 * 获取页面上需要请求的 评论id数组
+		 * 
+		 * @return {Array} [return id数组] ex:["12963_9_90044", "12868_9_90044", "1670313"] 
+		 */
+		CIMaker.prototype.getTopicIds = function() {
+			CIMaker.log(this._type + '.getTopicIds...');
+			//获取主题ID列表 
+			var o=this;
+			if(!o.opts) {
+				return;
+			}
+			var _topicIds=[];
+			this.commentItems = $( o.opts.commentItem ); //缓存对象
+			this.commentItems.each(function(){
+				var self = $(this);
+				if ( self.length <= 0 ) return;
+
+				try {
+					var topicId = self.attr("data-topicId");
+					_topicIds.push(topicId);
+				}
+				catch(exception){}
+			});
+			if (!_topicIds && _topicIds.length <= 0) return;
+			return _topicIds;
+
+		};
+
+		/**
+		 * 获取评论数
+		 * 
+		 * @return {[type]} [return description]
+		 */
+		CIMaker.prototype.getData = function(paramStr,callback) {
+			CIMaker.log(this._type + '.getData...');
+			$.ajax({
+			   type: "get",
+			   url: this.url,
+			   data: paramStr,
+			   dataType: "jsonp",
+			   success: function(data){
+					if( data && callback ){
+						callback(data);
+					}
+			   }
+			});
+		};
+
+		//将数据绑定到页面对象上 
+		CIMaker.prototype.decorate = function(topicIds) {
+			CIMaker.log(this._type + '.decorate...');
+			
+			var o=this;
+			if(!o.opts) {
+				return;
+			}
+			o.commentItems.each(function(){
+				var self = $(this);
+				if ( self.length <= 0 ) return;
+
+				try {
+					var topicId = self.attr("data-topicId");
+					var num = (topicIds[topicId] > 0) ? topicIds[topicId] : 0;
+					self.find(o.opts.commentCount).html(num);
+				}
+				catch(exception){}
+			});
+
+
+		};
+
+		CIMaker.prototype.init = function() {
+			CIMaker.log(this._type + '.init...');
+		};
+
+
+		//定义特定的评论厂商 
+		//畅言评论===================
+		CIMaker.changYan = function() {
+			this.url = 'https://changyan.sohu.com/api/open/topic/comment/sums?client_id=cyqvqDTV5';
+		};
+
+
+		/**
+		 * 格式化评论Id,返回ajax请求的data数据
+		 * 
+		 * @param {Array} topicIds 请求的评论id数组 ex:["12963_9_90044", "12868_9_90044", "1670313"] 
+		 * @return {String} return ajax请求的data的字符串
+		 */
+		CIMaker.changYan.formatTopicIds = function(topicIds) {
+			CIMaker.log('changYan.formatTopicIds...');
+			var _urlParamStr = '';
+			if(topicIds.length>0) {
+				_urlParamStr = 'topic_source_id=' + topicIds.join(',');
+			}
+			return _urlParamStr;
+		};
+
+		/**
+		 * 格式化请求返回数据
+		 * datas: jsonp1373595725382({"result":{"12963_9_90044":{"topicId":4915452,"sourceId":"12963_9_90044","sum":1},"12868_9_90044":{"topicId":4644571,"sourceId":"12868_9_90044","sum":3},"1670313":{"topicId":-1,"sourceId":"","sum":-1}}});
+		 * 
+		 * @param {Object} datas 请求畅言返回的jsonp数据
+		 * @return {Array} return 格式化后数据 ex:[1670313: -1, 12868_9_90044: 3, 12963_9_90044: 1]
+		 */
+		CIMaker.changYan.formatAjaxData = function(datas) {
+			CIMaker.log('changYan.formatAjaxData...');
+			if(!datas || !datas.result){
+				return {};
+			}
+			var result = [];
+			var _datas = datas.result;
+			for(i in _datas){
+				result[i] = _datas[i].sum;
+			}
+			return result;
+		};
+
+		// 17173评论=================
+		CIMaker.yyqq = function() {
+			this.url = 'http://comment1.news.17173.com/v2/f/comment/topicList.action';
+		};
+		/**
+		 * 格式化评论Id,返回ajax请求的data数据
+		 * 
+		 * @param {Array} topicIds 请求的评论id数组 ex: ["12963_9_90044", "12868_9_90044", "1670313"] 
+		 * @return {String} return ajax请求的data的字符串 ex: "topicIds=1xg8a0db2dgcod7mxbkf&topicIds=1xg8a0db2dhagxiykfjq"
+		 */
+		CIMaker.yyqq.formatTopicIds = function(topicIds) {
+			CIMaker.log('yyqq.formatTopicIds...');
+			var _urlParamStr = '';
+			if(topicIds.length>0) {
+				_urlParamStr = 'topicIds=' + topicIds.join('&topicIds=');
+			}
+			return _urlParamStr;
+		};
+		/**
+		 * 格式化请求返回数据
+		 * datas : jsonp1373595725381([{"id":"1xg8a0db2dgcod7mxbkf","commentCount":178,"title":"完美世界时装秀","articleUrl":"http://17173.tv.sohu.com/v/1/12460/MjI=","captchaRequired":false,"loginRequired":false,"auditRequired":false,"playerCount":178},{"id":"1xg8a0db2dhagxiykfjq","commentCount":2114,"title":"诛仙","articleUrl":"http://17173.tv.sohu.com/v/1/12460/NDI=","captchaRequired":false,"loginRequired":false,"auditRequired":false,"playerCount":2139}]);
+		 * 
+		 * @param {Object} datas 请求17173返回的jsonp数据
+		 * @return {Array} return 格式化后数据 ex:[1xg8a0db2dgcod7mxbkf: 178, 1xg8a0db2dhagxiykfjq: 2114]
+		 */
+		CIMaker.yyqq.formatAjaxData = function(datas) {
+			CIMaker.log('yyqq.formatAjaxData...');
+			if(!datas){
+				return {};
+			}
+			var result = [];
+			var _datas = datas;
+			for(i in _datas){
+				result[_datas[i].id] = _datas[i].commentCount;
+			}
+			return result;
+		};
+
+		
+		//ex: ==================
+		//var changYanCI = CIMaker.factory();
+		var changYanCI = CIMaker.factory({commentItem : '.js-comment-item2',commentType:'changYan'});
+		//var changYanCI = CIMaker.factory('changYan');
+
+		var yyqqCI = CIMaker.factory();
+		
+		console.log(yyqqCI, changYanCI);
+		//changYanCI.init();
+	</script>
+</body>
+</html>
