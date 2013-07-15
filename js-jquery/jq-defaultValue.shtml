@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.lazyload</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+
+</head>
+
+<body>
+
+<form>
+默认值：
+<input value="请输入用户名" name="username" type="text"/>
+
+
+</form>
+<script type="text/javascript" charset="utf-8">
+      $(function() {
+		$('input[name="username"]').focus(function(){
+			console.log('focus');
+			if( $(this).val() == this.defaultValue ){
+				$(this).val('');	
+			}
+		})
+		.blur(function(){
+			console.log('blur');	
+			if($(this).val()==""){
+				$(this).val( this.defaultValue );	
+			}
+		});
+		
+      });
+  </script>
+</body>
+</html>

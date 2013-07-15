@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.lazyload</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+<style type="text/css">
+
+.h{color:#F00;}
+
+</style>
+</head>
+
+<body>
+<ul class="list">
+	<li>
+    	<a href="#" target="_blank">大标题一</a>
+    	<ul class="sub-list">
+        	<li>标题1.1</li>
+            <li>标题1.2</li>
+        </ul>
+    </li>
+	<li>
+    	<a href="#" target="_blank">大标题二</a>
+    	<ul class="sub-list">
+        	<li>标题2.1</li>
+            <li>标题2.2</li>
+        </ul>
+    </li>
+</ul>
+<script type="text/javascript" charset="utf-8">
+      $(function() {
+
+		$(document).bind('click',function(e){
+			$(e.target).closest('li').css('color','red');
+			return false;
+		});
+
+		
+      });
+  </script>
+</body>
+</html>

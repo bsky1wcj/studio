@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.triggerHandler</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+<style type="text/css">
+
+#content{ width:500px; height:500px; display:block; background:#0F0;}
+#span{ width:200px; height:200px; display:block; background:#F00;}
+
+</style>
+</head>
+
+<body>
+
+
+
+<div id="msg"></div>
+
+<input type="text" value="" id="focus"/>
+
+
+<input type="button" value="triggerBtn" id="triggerBtn"/>
+
+
+
+
+<input type="button" value="triggerBtn2" id="triggerBtn2"/>
+
+
+<script type="text/javascript" charset="utf-8">
+
+
+      $(function() {
+			$msg = $('#msg');
+			
+			//我的自定义事件
+			$('#focus').bind('focus',function(){
+				$msg.append('<p>我的获取焦点事件</p>');
+			});
+
+			$('#triggerBtn').click(function(){
+				$('#focus').trigger('focus');	
+				
+			});
+
+
+
+			//triggerHandler  取消浏览器默认让文本获取焦点的行为
+			$('#triggerBtn2').click(function(){
+				$('#focus').triggerHandler('focus');	
+				
+			});
+			
+			
+		
+		
+      });
+  </script>
+  
+
+  
+</body>
+</html>

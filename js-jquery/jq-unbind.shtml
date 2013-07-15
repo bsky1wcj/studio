@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.unbind</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+<style type="text/css">
+
+#content{ width:500px; height:500px; display:block; background:#0F0;}
+#unbindPlugin{ width:200px; height:200px; display:block; background:#F00;}
+
+</style>
+</head>
+
+<body>
+
+
+
+
+
+
+<input type="button" value="bind" id="bind"/>
+<input type="button" value="unbind" id="unbind"/>
+
+<input type="button" value="unbind-命名空间" id="unbindPluginBtn"/>
+
+<input type="button" value="触发不包括-命名空间的绑定事件" id="bindPluginBtn"/>
+
+<div id="unbindPlugin">unbindPlugin</div>
+<div id="msg"></div>
+
+<script type="text/javascript" charset="utf-8">
+      $(function() {
+			$msg = $('#msg');
+			
+			//为函数指定变量，方便移除
+			$('#bind').bind('click',fun1 = function(event){
+				$msg.append('<p>fun1绑定事件</p>');
+			})
+			.bind('click',fun2 = function(event){
+				$msg.append('<p>fun2绑定事件</p>');
+			})
+			.bind('click',fun3 = function(event){
+				$msg.append('<p>fun3绑定事件</p>');
+			});
+
+
+			//移除指定方法 fun1
+			$('#unbind').click(function(){
+				$('#bind').unbind('click',fun1);
+				
+			});
+			
+		
+			//添加命名空间  根据命名空间删除事件
+			$('#unbindPlugin').bind('click.plugin',function(){
+				$msg.append('<p>click.plugin事件</p>');	
+			}).bind('click',function(){
+				$msg.append('<p>click事件</p>');	
+			}).bind('mouseover.plugin',function(){
+				$msg.append('<p>mouseover.plugin事件</p>');	
+			}).bind('mouseout',function(){
+				$msg.append('<p>mouseout事件</p>');	
+			}).bind('dblclick',function(){
+				$msg.append('<p>dblclick事件</p>');	
+			})
+			
+			
+			//排除命名空间事件
+			$('#unbindPluginBtn').click(function(){
+				$('#unbindPlugin').unbind('.plugin');
+			});
+			
+			$('#bindPluginBtn').click(function(){
+				$('#unbindPlugin').trigger('click!'); //注意click后的感叹号   作用是匹配所有不包含命名空间中的click方法
+			});
+			
+		
+      });
+  </script>
+  
+
+  
+</body>
+</html>

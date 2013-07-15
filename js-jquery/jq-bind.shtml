@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.bind</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+<style type="text/css">
+
+#content,#content2{ width:500px; height:500px; display:block; border:#CCC solid 1px;}
+.h{ background:#F00;}
+
+</style>
+</head>
+
+<body>
+
+<div id="content">content</div>
+<div id="content2">content2</div>
+
+<div id="msg"></div>
+
+
+
+<script type="text/javascript" charset="utf-8">
+
+
+      $(function() {
+			$msg = $('#msg');
+			
+			//bind多个事件
+			$('#content').bind('mouseover mouseout',function(){
+				$(this).toggleClass('h');
+			});
+			
+			
+			$('#content2').bind('mouseover',function(){
+				$(this).toggleClass('h');
+			})
+			.bind('mouseout',function(){
+				$(this).toggleClass('h');
+			});
+			
+		
+		
+      });
+  </script>
+  
+
+  
+</body>
+</html>

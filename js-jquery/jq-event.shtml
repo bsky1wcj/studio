@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.event</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+<style type="text/css">
+
+#content{ width:500px; height:500px; display:block; background:#0F0;}
+#span{ width:200px; height:200px; display:block; background:#F00;}
+
+</style>
+</head>
+
+<body>
+
+<div id="content">
+	外层div
+	<span id="span">内层span</span>
+
+</div>
+
+<div id="msg"></div>
+
+<form action="http://www.17173.com">
+用户名：<input type="text" name='username' id='username' value=""/>
+<input type="submit" value="提交" id="submint"/>
+
+</form>
+
+
+<script type="text/javascript" charset="utf-8">
+      $(function() {
+			$msg = $('#msg');
+			
+			//停止事件冒泡 例子：
+			$('#span').bind('click',function(event){
+				var txt =$msg.html()+'<p>内层span被点击</p>'	
+				$msg.html(txt);
+				event.stopPropagation()//停止事件冒泡  等价于  return false;
+			});
+			
+			$('#content').bind('click',function(){
+				var txt =$msg.html()+'<p>外层层content被点击</p>'	
+				$msg.html(txt);
+			});
+			
+			$('body').bind('click',function(){
+				var txt =$msg.html()+'<p>body被点击</p>'	
+				$msg.html(txt);
+			});
+			
+			//阻止默认行为 例子：
+			$('#submint').click(function(event){
+				console.log('event=',event);
+				console.log('event.target=',event.target);//获取触发事件的元素
+				console.log('event.type=',event.type);//获取到事件的类型
+				
+				
+				var username = $('#username').val();
+				if(!username){
+					$msg.html('<p>用户名不能为空</p>');
+					event.preventDefault();	//阻止默认行为  等价于  return false;
+				}
+				event.stopPropagation();
+			});
+			
+//			$('#content').mouseover(function(event){
+//				console.log('event.relatedTarget=',event.relatedTarget);//
+//			});
+
+
+			$('body').mousedown(function(e){
+				console.log(e.which); // 1=鼠标左键 left ; 2=鼠标中键； 3=鼠标右键	
+				console.log('Current mouse position: ' + e.pageX + ',' + e.pageY);//获取鼠标当前相对于页面的坐标
+				//console.log(e.originalTarget)
+			});
+			
+		
+		
+      });
+  </script>
+  
+<button value="Test" name="Test" id="checkMetaKey">Click me!</button>
+<div id="display"></div>
+<script>
+$('#checkMetaKey').click(function(e){
+  $('#display').text(e.metaKey); //e.metaKey 键盘的<ctrl>是否按住
+
+});
+</script>  
+
+
+
+<script>
+var last, diff;
+$('div').click(function(event) {
+	console.log('event.timeStamp=',event.timeStamp)
+  if ( last ) {
+    diff = event.timeStamp - last
+    $('div').append('time since last event: ' + diff + '<br/>');
+  } else {
+    $('div').append('Click again.<br/>');
+  }
+  last = event.timeStamp;//当前时间戳
+});
+</script>
+  
+</body>
+</html>

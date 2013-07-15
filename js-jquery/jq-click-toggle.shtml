@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.bind</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+<style type="text/css">
+
+.h{color:#F00; background:#FC0;}
+.ul li{float:left; display:inline; width:300px; height:22px; line-height:22px; border:#CCC solid 1px; text-align:center;}
+
+</style>
+</head>
+
+<body>
+<ul class="ul">
+    <li><a href="#" target="_blank">最热</a></li>
+    <li><a href="http://bns.17173.com/" target="_blank">剑灵</a></li>
+    <li><a href="http://nz.17173.com/" target="_blank">逆战</a></li>
+    <li><a href="http://speed.17173.com/" target="_blank">飞车</a></li>
+    <li><a href="http://x5.17173.com/" target="_blank">炫舞</a></li>
+    <li><a href="http://jx3.17173.com/" target="_blank">剑网3</a></li>
+    <li><a href="http://dzs.17173.com/" target="_blank">斗战神</a></li>
+    <li><a href="http://tl.17173.com/" target="_blank">天龙八部</a></li>
+    <li><a href="http://xyq.17173.com/" target="_blank">梦幻西游</a></li>
+    <li><a href="http://lol.17173.com/" target="_blank">英雄联盟</a></li>
+    <li><a href="http://cf.17173.com/" target="_blank">穿越火线</a></li>
+    <li><a href="http://wow.17173.com/" target="_blank">魔兽世界</a></li>
+    <li><a href="http://dnf.17173.com/" target="_blank">地下城与勇士</a></li>
+</ul>
+
+
+<div class="showmore hide-flag"><a href="http://www.17173.com" target="_blank"><span>显示全部游戏</span></a></div>
+<script type="text/javascript" charset="utf-8">
+
+
+      $(function() {
+			var $category = $('ul li:gt(5):not(:last)');//获取索引大于5的 除最后一条
+			$category.hide();
+			
+			var $toggleBtn = $('div.showmore > a');
+			
+			////方法一：根据可见性判断
+//			$toggleBtn.click(function(){
+//				
+//				if($category.is(':visible')){//如果$category可见
+//					$category.hide();
+//					$toggleBtn.find('span').text('显示全部游戏');
+//				} else {
+//					$category.show();
+//					$toggleBtn.find('span').text('显示推荐游戏');
+//					$('ul li').filter(':contains("剑灵"),:contains("剑网")') //选出高亮对象
+//						.addClass('h');
+//					
+//				}
+//				
+//				return false;	
+//			});
+
+////方法二：toggle切换可见性
+////判断存在问题
+//			$toggleBtn.toggle(function(){
+//					$category.hide();
+//					$toggleBtn.find('span').text('显示全部游戏');
+//					return false;
+//
+//					
+//				},function(){
+//					$category.show();
+//					$toggleBtn.find('span').text('显示推荐游戏');
+//					$('ul li').filter(':contains("剑灵"),:contains("剑网")') //选出高亮对象
+//						.addClass('h');
+//					return false;	
+//			});
+
+
+
+			////方法三：toggleClass 改变按钮样式  根据样式标签判断切换
+			$toggleBtn.click(function(){
+
+				if($toggleBtn.hasClass('hide-flag')){//根据'hide-flag' 切换对象
+					$category.hide();
+					$toggleBtn.find('span').text('显示全部游戏');
+				} else {
+					$category.show();
+					$toggleBtn.find('span').text('显示推荐游戏');
+					$('ul li').filter(':contains("剑灵"),:contains("剑网")') //选出高亮对象
+						.addClass('h');
+					
+				}
+				$toggleBtn.toggleClass('hide-flag');
+				
+				return false;	
+			});
+
+
+		
+      });
+  </script>
+  
+
+  
+</body>
+</html>

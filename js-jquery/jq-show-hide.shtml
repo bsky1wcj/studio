@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.bind</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+<style type="text/css">
+
+
+.con{ display:inline; display:none;}
+
+</style>
+</head>
+
+<body>
+
+<h2 class="title">title</h2>
+<div class="con">con</div>
+
+
+
+<script type="text/javascript" charset="utf-8">
+
+
+      $(function() {
+			$msg = $('#msg');
+			
+			
+			//hide 会记住对象在show的时候的 显示方式 除了display:none;以为的  display:inline; display:block;.... 
+			$('.title').toggle(function(){
+				$(this).next().hide();
+			},function(){
+				$(this).next().show();
+			});
+		
+		
+      });
+  </script>
+  
+
+  
+</body>
+</html>

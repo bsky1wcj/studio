@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.trigger</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+<style type="text/css">
+
+#content{ width:500px; height:500px; display:block; background:#0F0;}
+#span{ width:200px; height:200px; display:block; background:#F00;}
+
+</style>
+</head>
+
+<body>
+
+
+
+<div id="msg"></div>
+
+
+<input type="button" value="trigger" id="btn"/>
+
+<input type="button" value="triggerBtn" id="triggerBtn"/>
+
+
+<input type="button" value="trigger2" id="btn2"/>
+
+<input type="button" value="triggerBtn2" id="triggerBtn2"/>
+
+
+<script type="text/javascript" charset="utf-8">
+      $(function() {
+			$msg = $('#msg');
+			
+			//我的自定义事件
+			$('#btn').bind('myclick',function(){
+				$msg.append('<p>我的自定义事件</p>');
+			});
+
+			$('#triggerBtn').click(function(){
+				$('#btn').trigger('myclick');	
+				
+			});
+
+
+
+			//我的自定义事件 传递数据
+			$('#btn2').bind('myclick',function(event,msg1,msg2){
+				$msg.append('<p>msg1:'+ msg1+' ------- msg2:'+ msg2 +'</p>');
+			});
+
+			$('#triggerBtn2').click(function(){
+				$('#btn2').trigger('myclick',['我的自定义事件1','我的自定义事件2']);	
+				
+			});
+			
+			
+		
+		
+      });
+  </script>
+  
+
+  
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.unbind</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+<style type="text/css">
+
+#content{ width:500px; height:500px; display:block; background:#0F0;}
+#unbindPlugin{ width:200px; height:200px; display:block; background:#F00;}
+
+</style>
+</head>
+
+<body>
+
+
+<div id="msg"></div>
+
+<script type="text/javascript" charset="utf-8">
+      $(function() {
+		var url="http://event.51buy.com/xml.php?rand=&mod=lotteryge&act=order&oder_lottery=0&sn=7559&order_id=0";
+		var $msg = $('#msg');	
+		var time =5000;
+	
+		var fnhander = function(){
+			console.log(1)	
+			$.ajax({ 
+				url: "http://event.51buy.com/xml.php?rand=&mod=lotteryge&act=order&oder_lottery=0&sn=7559&order_id=0", 
+				context: document.body, 
+				timeout: 1000, 
+				error: function(){ 
+					$msg.append('网络错误，请刷新页面后再抽奖<br/>');
+					
+				},
+				success: function(data){
+					//$msg.append(data);
+						var errno = data.match(/<errno>(.+)<\/errno>/i)[1];
+						var message = data.match(/<message>(.+)<\/message>/i)[1];
+					if (errno == 0) {//正常抽奖
+						$msg.append('<br/><b style="color:red">正常抽奖</b><br/>');
+						var level = data.match(/<success_code>(.+)<\/success_code>/i)[1];
+							if(level=='1'||level=='2'||level=='3'||level=='4'||level=='6'||level=='7'||level=='8'){
+								//circle(level,message);
+								$msg.append('<br/>'+level+','+message+'<br/>');
+							}else if(level=='5'){
+								//	circle(level,'');
+								$msg.append('<br/>'+level+'<br/>');	
+							} else {
+								$msg.append('<br/>'+message+'<br/>');
+
+							}
+						clearInterval(send);
+					} else if (errno == 1) {//未登录
+						$msg.append('该活动需要登录后才能参与。');
+					}  else if (message == '') {//错误
+						$msg.append('抱歉，系统繁忙，请5秒钟后再试');
+					} else {
+						if (errno == 46) {
+							$msg.append('您好，此抽奖活动需手机验证后才能参与。');
+							window.open("http://base.51buy.com/myprofile.html");
+						} else if(errno == 47) {
+							$msg.append('您好，此抽奖活动需邮箱验证后才能参与。');
+							window.open("http://base.51buy.com/myprofile.html");
+						} else if(errno == 50) {
+							$msg.append('啊噢  您今天的抽奖机会已用完   先去看看其他福利');
+						} else if(errno == 51) {
+							$msg.append('很抱歉，您的抽奖次数已用完。请明天再来!');
+						}else {
+							$msg.append('网络错误，请刷新页面后再抽奖');
+							
+								var lefttime = 5;
+							   var timer = setInterval(function(){
+									console.log('lefttime=',lefttime);
+									var t = lefttime,
+										time = '';
+									if( t > 0 ){
+										time = t;
+									}else{
+										
+										time = 0;
+										if(timer)clearInterval(timer);
+										window.location.reload();
+									}
+									$('.js-djs').html(time);
+									--lefttime;
+								},1000);
+							
+							
+							
+
+		
+						}
+					}
+					
+				}
+			});
+			
+			
+			
+			
+		};
+		var send = setInterval(fnhander,time);
+
+      });
+  </script>
+  
+
+  
+</body>
+</html>

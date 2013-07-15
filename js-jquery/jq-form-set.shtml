@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.lazyload</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+
+</head>
+
+<body>
+
+<form>
+<select id="single">
+	<option>1</option>
+    <option>2</option>
+    <option>3</option>
+</select>
+
+<select id="multiple" multiple="multiple">
+	<option>1</option>
+    <option>2</option>
+    <option>3</option>
+</select>
+
+<input type="checkbox" value="cb1" name="cb"/>多选1
+<input type="checkbox" value="cb2" name="cb"/>多选2
+<input type="checkbox" value="cb3" name="cb"/>多选3
+
+<input type="radio" value="r1" name="r"/>单选1
+<input type="radio" value="r2" name="r"/>单选2
+<input type="radio" value="r3" name="r"/>单选3
+
+</form>
+<script type="text/javascript" charset="utf-8">
+      $(function() {
+
+		$('#single').val('2');
+		$('#single option:eq(2)').attr('selected',true);
+		
+		$('#multiple').val(['2','3']);
+	
+		$(':checkbox').val(['cb1','cb2']);
+		
+		$(':radio').val(['r2']);
+		$('[value=r3]:radio').attr('checked',true);
+
+		
+      });
+  </script>
+</body>
+</html>

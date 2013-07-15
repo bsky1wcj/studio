@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.lazyload</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+
+</head>
+
+<body>
+
+<ul class="ul">
+	<li><img src="http://i2.17173.itc.cn/2013/www/bigeye/2013/03/y20130324main_a.jpg" width="165" height="74" alt="BMW M1 Hood" style="display: block;"></li>
+    <li><img src="http://i2.17173.itc.cn/2013/www/bigeye/2013/03/l0326mh01.jpg" width="165" height="74" alt="BMW M1 Hood" style="display: block;"></li>
+    <li><img src="http://i3.17173.itc.cn/2013/www/2013/zq/03/26/yl.jpg" width="165" height="74" alt="BMW M1 Hood" style="display: block;"></li>
+
+</ul>
+<script type="text/javascript" charset="utf-8">
+      $(function() {
+		var total = 10;
+		var timer = setInterval(function(){
+				
+			$('.ul li:first').appendTo( $('.ul') );
+
+			if(!total)clearInterval(timer);
+
+			console.log(total)
+			--total;
+			
+		},1000); 
+		  
+		
+		
+		$('.ul li').click(function(){
+			$(this).clone(true).appendTo( $(this).parent() );	
+		});  
+		
+      });
+  </script>
+</body>
+</html>

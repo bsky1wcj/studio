@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jquery.lazyload</title>
+<script type="text/javascript" src="http://ue8.17173.itc.cn/cache/lib/v2/jquery-1.4.4.js"></script>
+<style type="text/css">
+.mod-news{/*position:relative;*/ padding-left:100px;}
+#tooltip{color:#F00; position:absolute; background:#fff; border:#CCC solid 1px; }
+
+
+</style>
+</head>
+
+<body>
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<ul class="mod-news tmn-list">
+
+<li><span class="time">03-28</span><a class="tooltip" href="http://taoyuan.17173.com/content/2013-03-28/20130328112546836.shtml" target="_blank" title="桃园类小说《八极门》第六章 三年之约">桃园类小说《八极门》第六章 三年之约</a></li>
+
+<li><span class="time">03-28</span><a class="tooltip" href="http://taoyuan.17173.com/content/2013-03-28/20130328112500900.shtml" target="_blank" title="桃园类小说《八极门》第五章 当世四家">桃园类小说《八极门》第五章 当世四家</a></li>
+
+<li><span class="time">03-28</span><a class="tooltip" href="http://taoyuan.17173.com/content/2013-03-28/20130328112414499.shtml" target="_blank" title="桃园类小说《八极门》第四章 木岳归来 ">桃园类小说《八极门》第四章 木岳归来 </a></li>
+
+<li><span class="time">03-28</span><a class="tooltip" href="http://taoyuan.17173.com/content/2013-03-28/20130328112321333.shtml" target="_blank" title="桃园类小说《八极门》第三章 妖禁九重 ">桃园类小说《八极门》第三章 妖禁九重 </a></li>
+
+<li><span class="time">03-28</span><a class="tooltip" href="http://taoyuan.17173.com/content/2013-03-28/20130328112215932.shtml" target="_blank" title="桃园类小说《八极门》第二章 桃花小苑 ">桃园类小说《八极门》第二章 桃花小苑 </a></li><li class="line"></li>
+
+<li><span class="time">03-28</span><a class="tooltip" href="http://taoyuan.17173.com/content/2013-03-28/20130328112126406.shtml" target="_blank" title="桃园类小说《八极门》第一章 九寒极光">桃园类小说《八极门》第一章 九寒极光</a></li>
+
+
+</ul>
+<script type="text/javascript" charset="utf-8">
+      $(function() {
+		var x=10, y=20;
+		$('a.tooltip').mouseover(function(e){
+			this.myTitle = this.title;
+			//this.title =="";
+			$(this).attr('title','');
+			var tooltip='<div id="tooltip">'+this.myTitle+'</div>';
+			$('body').append(tooltip);
+			$('#tooltip')
+				.css({
+					"top" : (e.pageY + y)+'px',
+					"left" : (e.pageX + x)+'px'	
+				}).show('fast');
+		})
+		.mouseout(function(){
+			this.title = this.myTitle;
+			$('#tooltip').remove();
+		})
+		.mousemove(function(e){
+			$('#tooltip')
+				.css({
+					"top" : (e.pageY + y)+'px',
+					"left" : (e.pageX + x)+'px'	
+				});
+		});
+
+		
+      });
+  </script>
+</body>
+</html>
