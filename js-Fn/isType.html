@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>类型判断</title>
+</head>
+<body>
+	<script type="text/javascript">
+	(function(global){
+
+		/**
+		 * 类型判断
+		 * 
+		 * @param {String} type 对象类型字符：Object 、String 、 Array 、 Function
+		 * @return {Function} 返回判断指定类型的方法
+		 */
+		function isType(type) {
+			type = type.charAt(0).toUpperCase() + type.substr(1);
+			return function(obj) {
+				return Object.prototype.toString.call(obj) === "[object " + type + "]"
+			}
+		}
+		//ex: 类型判断方法
+		var isObject = isType("Object");
+		var isString = isType("String");
+		var isArray = Array.isArray || isType("Array");
+		var isFunction = isType("Function");
+
+		//ex1:
+		var tArray1 = [1, 2, 3],
+			tArray2 = new Array(1, 2, 3),
+			tArray3 = 1;
+		console.log('isArray = ', isArray(tArray1));
+		console.log('isArray = ', isArray(tArray2));
+		console.log('isArray = ', isArray(tArray3));
+
+
+	})(window);
+
+	</script>
+</body>
+</html>
