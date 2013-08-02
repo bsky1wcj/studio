@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>replace应用收集</title>
+</head>
+<body>
+	<script type="text/javascript">
+		//返回字符长度，中文两个字符，英文一个字符
+		function chinaLen(str) {
+			return str.replace(/[^\x00-\xff]/g, '**').length;
+		}
+
+		//ex:
+		console.log('中文str length = ', chinaLen('中文str'));
+	</script>
+</body>
+</html>
