@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>用AOP改善javascript代码</title>
+</head>
+<body>
+	<script type="text/javascript">
+	(function(){
+
+
+//Aop又叫面向切面编程，用过spring的同学肯定对它非常熟悉，而在js中，AOP是一个被严重忽视的技术点，这篇就通过下面这几个小例子，来说说AOP在js中的妙用.
+// 
+// 以下函数可以调整函数运行的顺序，但无法将自身函数的前置函数返回的变量传递给自身
+		Function.prototype.before = function(func){
+		   var _self = this;
+		   return function(){
+		   		var ret = func.apply(this, arguments);
+		      if( ret === false){
+		         return false;
+		      }
+		      return _self.apply(this, arguments);
+		   }
+		 }
+
+		 Function.prototype.after = function( func ){
+		    var _self = this;
+
+		    return function(){
+		      var ret = _self.apply(this, arguments);
+		      
+		      if(ret === false){
+		         return false;
+		      }
+		      
+		      func.apply(this, arguments);
+		      return ret;
+		    }
+		 }
+
+
+
+		 var t1 = function(a, b){
+		 	console.log(a, b);
+		 };
+		 t1 = t1.before(function(a1,b1){
+		 	console.log('before',a1, b1);
+		 });
+		 t1('a1', 'b1');
+
+//防止window.onload被二次覆盖.
+		// window.onload = function(){
+		//    alert(1);
+		//  }
+
+		// window.onload = (window.onload || function(){} ).before(function(){
+		//   alert(2);
+		// }); 
+
+
+//没用aop
+// var user_log= function(diff, func_name){
+// 	console.log(diff, func_name);
+// }
+// var append_doms = function(){
+// 	var d = +new Date;//业务无关联的代码
+// 	for(var i=0; i<1000;i++){
+// 		 var div = document.createElement('div');
+// 		 document.body.appendChild(div);
+// 	}
+// 	user_log(+new Date - d, "append_doms");//业务无关联的代码
+// }
+// append_doms();
+
+
+//aop
+var user_log= function(diff, func_name){
+	console.log(diff, func_name);
+}
+var log_time = function(func, func_name){
+  return func = (function(){
+    var d;
+    return func.before(function(){
+  		d = +new Date;
+  	}).after(function(){
+    	user_log(+ new Date - d, func_name);
+ 	 });
+  })();
+}
+
+var append_doms = function(a){
+	console.log('append',a);
+	for(var i=0; i<2;i++){
+	  var div = document.createElement('div');
+	  document.body.appendChild(div);
+	}
+}
+append_doms = log_time(append_doms, 'append_doms');
+append_doms();
+
+
+
+
+var log = function(){
+	console.log('log');
+}
+
+append_doms.after(function(){
+	log();
+
+})('t');
+
+		var add = function(a, b){
+			console.log('add', a, b);
+			return a + b;
+		}
+		var sub = function(a, b){
+			console.log('sub', a, b);
+			return a - b;
+		}
+
+		var sub2='', add2='';
+		add2=add.before(function(){
+
+			sub2= sub(4, 2);
+			sub2 = 5;
+			console.log(sub2);
+			
+		});
+		console.log('message',d);
+		console.log(sub2, add2(sub2, 1));
+
+		var m=5;
+		var d=[];
+		d[1]=10;
+		console.log(d[1]);
+		var t = add.before(function(){
+
+			
+			console.log('before',d[1]);
+d[1] = 20;
+
+
+		}).after(function(){
+			console.log('after', d[1]);
+		});
+
+
+		console.log('-',d[1]);
+		t(d[1], 1);
+
+	})();
+	</script>
+	
+</body>
+</html>
