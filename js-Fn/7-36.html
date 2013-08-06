@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>33选6,16选1-选号</title>
+</head>
+<body>
+	<div id="ballBox">
+		<span class="title">抽奖箱：</span><span id="balls" class="con">loading...</span>
+	</div>
+	<div id="MillionBox">
+		<span class="title">抽中号：</span><span id="millions" class="con">loading...</span>
+	</div>
+	<input id="start" type="button" value="开始选号"/>	
+	<script type="text/javascript">
+	;(function(global){
+
+
+		//接口
+		var utils = {
+			addListener: null,
+			removeListener: null
+		};
+		//实现
+		if(typeof window.addEventListener === 'function') {
+			utils.addListener = function(el, type, fn) {
+				el.addEventListener(type, fn, false);
+			};
+		}
+		else if(typeof document.attachEvent === 'function') { //IE
+			utils.addListener = function(el, type, fn) {
+				el.attachEvent('on' + type, fn);
+			};
+		} else {//更早版本的浏览器
+			utils.addListener = function(el, type, fn) {
+				el['on' + type] = fn;
+			};
+		}
+
+		if(typeof window.removeEventListener === 'function') {
+			utils.removeListener = function(el, type, fn) {
+				el.removeEventListener(type, fn, false);
+			};
+		}
+		else if(typeof document.detachEvent === 'function') { //IE
+			utils.removeListener = function(el, type, fn) {
+			};
+		} else {//更早版本的浏览器
+			utils.removeListener = function(el, type, fn) {
+				el['on' + type] = null;
+			};
+		}
+
+
+
+		//选球
+		var lottery = {
+			dubug : false,
+			balls : [],
+			ballLen : 33,//待抽奖的全部球个数
+			millions : [],//中奖号
+			millionLen : 6,//中奖号个数
+			//待抽奖的全部球
+			initBalls : function() {
+				var balls = [];
+				for(var i = 1; i <= this.ballLen; i++){
+					balls.push(i);
+				}
+				this.balls = balls;
+				this.dubug && console.log('initBalls->', this.balls);
+			},
+			init : function() {
+				//console.log(this.ballBox);
+				this.initBalls();
+				this.getBall();
+			},
+			//在指定范围随机选球
+		    random : function(min, max){
+		        return Math.floor(Math.random() * (max - min + 1) + min);
+		    },
+		    //取球
+		    getBall : function() {
+		    	var l = this.ballLen,
+		    		n = this.millionLen;
+		    	for(; this.millionLen > 0; this.millionLen--){
+		    		var max = this.ballLen,
+		    			r = this.random(1, max);
+		    		this.millions.push(this.balls[r-1]);
+		    		this.balls.splice(r-1, 1);
+		    		//console.log('getBall',);
+		    		// this.showBalls();
+		    		// this.showMillions();
+		    		this.ballLen--;
+		    	}
+	    		this.showBalls();
+	    		this.showMillions();
+		    },
+		    //显示剩余全部的球
+			showBalls : function() {
+				this.dubug && console.log('showBalls->', this.balls);
+			},
+			//显示选中的球
+			showMillions : function() {
+				this.dubug && console.log('showMillions->', this.millions);
+			}
+
+		};
+		//深度复制属性实现继承，如果子类本身有父类方法则不复制父类方法
+		function extendDeep(parent, child) {
+			var i,
+				toStr = Object.prototype.toString,
+				astr = '[object Array]';
+
+			child = child || {};
+			for(i in parent) {
+				if(parent.hasOwnProperty(i)) {
+					if(!child.hasOwnProperty(i)) {
+						if(typeof parent[i] === 'object') {
+							child[i] = (toStr.call(parent[i]) === astr) ? [] : {};
+							extendDeep(parent[i], child[i]);
+						} else {
+							child[i] = parent[i];
+						}
+						
+					}
+					
+				}
+			}
+			return child;
+		}
+		Function.prototype.before = function(func){
+		   var _self = this;
+		   return function(){
+		   		var ret = func.apply(this, arguments);
+		      if( ret === false){
+		         return false;
+		      }
+		      return _self.apply(this, arguments);
+		   }
+		};
+		Function.prototype.after = function( func ){
+		    var _self = this;
+
+		    return function(){
+		      var ret = _self.apply(this, arguments);
+		      
+		      if(ret === false){
+		         return false;
+		      }
+		      
+		      func.apply(this, arguments);
+		      return ret;
+		    }
+		}
+		// window.onload = function(){
+		//    alert(1);
+		//  }
+
+		window.onload = (window.onload || function(){} ).after(function(){
+
+
+
+			var doc = document;
+			var stratBtn = doc.getElementById('start'),
+				ballSpan = doc.getElementById('balls')
+				millionSpan =doc.getElementById('millions');
+			utils.addListener(stratBtn, 'click', function(){
+				//console.log('点击了开始按钮!');
+
+				//ex:
+				var redBall = {
+					ballLen : 33,//待抽奖的全部球个数
+					millionLen : 6//中奖号个数
+				};
+				redBall = extendDeep(lottery, redBall);
+				redBall.init();
+
+				var blueBall = {
+					ballLen : 16,//待抽奖的全部球个数
+					millionLen : 1//中奖号个数
+				};
+				blueBall = extendDeep(lottery, blueBall);
+				blueBall.init();
+
+
+				ballSpan.innerHTML = redBall.balls.join(',') + ' - ' + blueBall.balls.join(',');
+				millionSpan.innerHTML = redBall.millions.join(',')+ ' - ' + blueBall.millions.join(',');;
+
+
+
+			});
+		}); 
+
+
+
+	}(window));
+
+	</script>
+
+</body>
+</html>
