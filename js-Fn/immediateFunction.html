@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>即时函数的返回值</title>
+</head>
+<body>
+	<script type="text/javascript">
+		var o = {
+			value : 10,
+			message: (function( ){
+
+				console.log('message');
+				var who = 'me',
+					what = 'call';
+				return what + " " + who;
+			}()),
+			getMsg: function() {
+				console.log('getMsg');
+				console.log(this.value);
+				return this.message;
+			} 	
+
+		};
+
+		console.log(o.getMsg());
+		//console.log(o.message);
+	</script>
+	
+</body>
+</html>
