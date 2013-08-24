@@ -29,10 +29,19 @@
 		//ex1:
 		var tArray1 = [1, 2, 3],
 			tArray2 = new Array(1, 2, 3),
-			tArray3 = 1;
+			tArray3 = 1,
+			tArray4 = [1, {}, 3];
 		console.log('isArray = ', isArray(tArray1));
 		console.log('isArray = ', isArray(tArray2));
 		console.log('isArray = ', isArray(tArray3));
+
+		console.log('isObject = ', isObject(tArray4));
+
+
+
+
+		var t1= [{"data": "日均新登量","attr": {"id": "newPlatUser"}}, 327797, 0, "2600"];
+		console.log('isObject = ', isObject(t1));
 
 
 	})(window);
